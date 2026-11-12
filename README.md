@@ -221,6 +221,15 @@ build by hand, and where the same piece gets re-cut repeatedly.
 
 If you need keyframed motion or compositing, use a tool built for that.
 
+## Sponsoring
+
+Sponsorship is what keeps htmlreel maintained: issues read and answered, and
+compatibility kept up with current Python, Chrome and ffmpeg releases.
+
+[Sponsor this project](https://github.com/sponsors/iarodrigovigil-cloud)
+
+Sponsors at $25 a month and above are listed here.
+
 ## Licence
 
 MIT.
