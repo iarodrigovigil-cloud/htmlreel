@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>htmlreel example — countdown</title>
+<style>
+  /*
+    The whole contract of a page htmlreel can render: it must draw the state
+    of the world at millisecond t and nothing else. No setInterval, no
+    transitions, no animations, no Date.now() — every one of those makes the
+    output depend on when the frame happened to be captured.
+
+    Read t from the query string, draw, stop. With no ?t= the page loops on
+    its own so it can be previewed in a normal browser.
+  */
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage {
+    width: 1280px; height: 720px; position: relative; overflow: hidden;
+    background: #0F172A; color: #F8FAFC;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script>
+const DURATION = 5000;
+const stage = document.getElementById('stage');
+
+const clamp = (x) => Math.max(0, Math.min(1, x));
+const ramp = (t, from, to) => clamp((t - from) / (to - from));
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+
+function render(t) {
+  const left = Math.max(0, Math.ceil((DURATION - t) / 1000));
+  const sweep = ease(ramp(t, 0, DURATION));
+  const settle = ease(ramp(t % 1000, 0, 420));
+
+  stage.innerHTML = `
+    <div style="position:absolute;inset:0;display:flex;align-items:center;
+                justify-content:center;flex-direction:column">
+      <div style="font-size:${180 + (1 - settle) * 26}px;font-weight:700;
+                  letter-spacing:-0.04em;opacity:${0.45 + settle * 0.55}">
+        ${left}
+      </div>
+      <p style="margin:18px 0 0;font-size:26px;letter-spacing:.22em;
+                text-transform:uppercase;color:#7FB0D4;
+                opacity:${ease(ramp(t, 200, 900))}">
+        rendered at t = ${Math.round(t)} ms
+      </p>
+    </div>
+    <div style="position:absolute;left:0;bottom:0;height:8px;background:#2C6E9E;
+                width:${sweep * 100}%"></div>`;
+}
+
+const query = new URLSearchParams(location.search);
+if (query.has('t')) {
+  render(Number(query.get('t')));
+} else {
+  const started = performance.now();
+  const loop = () => {
+    render((performance.now() - started) % DURATION);
+    requestAnimationFrame(loop);
+  };
+  loop();
+}
+</script>
+</body>
+</html>

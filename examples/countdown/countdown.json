@@ -1,0 +1,10 @@
+{
+  "name": "countdown",
+  "page": "scene.html",
+  "fps": 15,
+  "duration": 5.0,
+  "width": 1280,
+  "height": 720,
+  "out": "out/countdown",
+  "vertical": { "background": "0x0F172A" }
+}

@@ -1,0 +1,6 @@
+_frames-*/
+*.pyc
+__pycache__/
+out/
+*.mp4
+*.wav
