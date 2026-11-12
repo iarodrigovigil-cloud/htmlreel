@@ -12,7 +12,7 @@ No Puppeteer, no Node, no Python dependencies. Chrome and ffmpeg, which you
 already have.
 
 ```bash
-pip install htmlreel
+pip install git+https://github.com/iarodrigovigil-cloud/htmlreel
 htmlreel build my-reel.json
 ```
 
