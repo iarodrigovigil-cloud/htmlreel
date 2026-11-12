@@ -33,8 +33,26 @@ from . import tools
 LINE = re.compile(r"silence_(start|end):\s*(-?[\d.]+)")
 
 
+def parse_silences(report, ends_at):
+    """Read silencedetect's output into (start, end) pairs.
+
+    `ends_at` closes a silence that the filter opened and never closed, which
+    happens when the recording fades out and stays quiet to the last sample.
+    """
+    found, start = [], None
+    for kind, value in LINE.findall(report):
+        if kind == "start":
+            start = float(value)
+        elif start is not None:
+            found.append((start, float(value)))
+            start = None
+    if start is not None:
+        found.append((start, ends_at))
+    return found
+
+
 def silences(path, threshold_db=-35.0, minimum=0.25):
-    """Every stretch quieter than the threshold, as (start, end) seconds."""
+    """Every stretch of `path` quieter than the threshold, in seconds."""
     result = tools.run([
         tools.ffmpeg(), "-hide_banner", "-i", path,
         "-af", "silencedetect=noise=%gdB:d=%g" % (threshold_db, minimum),
@@ -43,16 +61,11 @@ def silences(path, threshold_db=-35.0, minimum=0.25):
     # NOTE: never add "-v error" to that command. It suppresses the filter's
     # own output along with the banner, and silencedetect then succeeds while
     # printing nothing at all.
-    found, start = [], None
-    for kind, value in LINE.findall(result.stderr):
-        if kind == "start":
-            start = float(value)
-        elif start is not None:
-            found.append((start, float(value)))
-            start = None
-    if start is not None:
-        found.append((start, tools.duration(path)))
-    return found
+    report = result.stderr
+    # The file's length is only needed to close a dangling silence, so it is
+    # only measured when there is one.
+    ends_at = tools.duration(path) if "silence_start" in report else 0.0
+    return parse_silences(report, ends_at)
 
 
 def speech_end(path, threshold_db=-35.0):

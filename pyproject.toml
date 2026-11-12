@@ -7,7 +7,7 @@ name = "htmlreel"
 version = "0.1.0"
 description = "Narrated video from an HTML page that is a pure function of time"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = { file = "LICENSE" }
 authors = [{ name = "Juan Rodrigo Vigil" }]
 keywords = ["video", "html", "ffmpeg", "headless-chrome", "voice-over", "reproducible"]

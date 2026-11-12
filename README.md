@@ -1,10 +1,12 @@
 # htmlreel
 
+[![tests](https://github.com/iarodrigovigil-cloud/htmlreel/actions/workflows/tests.yml/badge.svg)](https://github.com/iarodrigovigil-cloud/htmlreel/actions/workflows/tests.yml)
+
 Render a narrated video from an HTML page, and fit the shot cuts to the voice
 that was actually recorded.
 
 You write a page that draws the state of the world at millisecond `t`.
-htmlreel screenshots it 450 times, assembles the frames, measures where the
+htmlreel screenshots it once per frame, assembles them, measures where the
 narration pauses, places each block of speech inside its own shot, and checks
 the finished track to make sure nothing crossed a cut.
 
@@ -197,8 +199,17 @@ launches began to hang. Slower per frame, but it finishes.
 
 ## Requirements
 
-Python 3.8+, and Chrome, Chromium or Edge plus ffmpeg on `PATH`. Override the
+Python 3.9+, and Chrome, Chromium or Edge plus ffmpeg on `PATH`. Override the
 lookup with `HTMLREEL_CHROME`, `HTMLREEL_FFMPEG` and `HTMLREEL_FFPROBE`.
+
+## Tests
+
+```bash
+python -m unittest discover -s tests
+```
+
+They cover the placement arithmetic, the config rules and the parsing of
+ffmpeg's output, and need neither Chrome nor ffmpeg to run.
 
 ## What this is not
 
